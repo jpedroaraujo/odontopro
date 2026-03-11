@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { SidebarDashboard } from "./_components/sidebar";
 
 export const metadata: Metadata = {
-  title: "Nome da página",
-  description: "Descrição da página",
+  title: "Dashboard - OdontoPRO",
+  description:
+    "Painel de controle para gerenciamento de pacientes, agendamentos e finanças da clínica odontológica.",
 };
 
 export default function DashboardLayout({
