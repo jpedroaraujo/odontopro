@@ -47,30 +47,28 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
           },
         )}
       >
-        <div className="mb-6 mt-4 flex flex-col">
+        <div className="mb-6 mt-4 flex flex-col items-center justify-center">
           {!isCollapsed && (
             <Image
               src={logoImg}
               alt="Logo do OdontoPRO"
-              className="w-auto h-auto"
               quality={100}
               priority
             />
           )}
 
           <Button
-            className="bg-gray-100 hover:bg-gray-50 text-zinc-900 self-end mb-2"
+            className={clsx(
+              "bg-gray-100 hover:bg-gray-50 text-zinc-900 self-end mb-2",
+              { "rotate-180 w-full": isCollapsed, "w-fit": !isCollapsed },
+            )}
             onClick={() => setIsCollapsed(!isCollapsed)}
           >
-            {!isCollapsed ? (
-              <ChevronLeft className="w-5 h-5" />
-            ) : (
-              <ChevronRight className="w-5 h-5" />
-            )}
+            <ChevronLeft className="w-5 h-5" />
           </Button>
 
           {isCollapsed && (
-            <nav className="flex flex-col gap-1 overflow-hidden">
+            <nav className="flex flex-col gap-1 overflow-hidden mt-2">
               <Tooltip>
                 <TooltipTrigger>
                   <SidebarLink
