@@ -1,7 +1,23 @@
-export default function Plans() {
+import getSession from "@/lib/getSession";
+import { redirect } from "next/navigation";
+import { getUserData } from "./_data-access/get-info-user";
+
+export default async function Profile() {
+  const session = await getSession();
+
+  if (!session) {
+    redirect("/");
+  }
+
+  const user = await getUserData({ userId: session.user.id });
+
+  if (!user) {
+    redirect("/");
+  }
+
   return (
     <div>
-      <h1>Plans</h1>
+      <h1>Profile</h1>
     </div>
   );
 }
