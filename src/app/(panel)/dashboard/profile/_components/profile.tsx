@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/dialog";
 import { ChevronRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import clsx from "clsx";
 
 export default function ProfileContent() {
   const { form, onSubmit } = useProfileForm();
@@ -172,7 +173,7 @@ export default function ProfileContent() {
 
                       <DialogTrigger asChild>
                         <Button
-                          className="w-full justify-between font-regular cursor-pointer"
+                          className="w-full justify-between font-normal cursor-pointer"
                           variant="outline"
                         >
                           Clique aqui para selecionar horários <ChevronRight className="w-5 h-5" />
@@ -200,11 +201,13 @@ export default function ProfileContent() {
                               >
                                 <Field
                                   orientation="horizontal"
-                                  className={`h-[35px] items-center text-center flex-row rounded-md ${
-                                    tempTimes.includes(slot)
-                                      ? "border-2 border-teal-500"
-                                      : "border border-slate-300"
-                                  }`}
+                                  className={clsx(
+                                    "h-[35px] items-center text-center flex-row rounded-md",
+                                    {
+                                      "border-2 border-teal-500": tempTimes.includes(slot),
+                                      "border border-slate-300": !tempTimes.includes(slot),
+                                    },
+                                  )}
                                 >
                                   <Checkbox
                                     id={slot}
@@ -232,10 +235,8 @@ export default function ProfileContent() {
                           <DialogClose asChild>
                             <Button
                               type="button"
-                              className="bg-teal-500 hover:bg-teal-600 w-full"
-                              onClick={() => {
-                                field.onChange(tempTimes);
-                              }}
+                              className="bg-teal-500 hover:bg-teal-600 w-full cursor-pointer"
+                              onClick={() => field.onChange(tempTimes)}
                             >
                               Salvar horários
                             </Button>

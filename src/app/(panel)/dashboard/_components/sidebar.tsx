@@ -12,15 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  Banknote,
-  CalendarCheck2,
-  ChevronLeft,
-  ChevronRight,
-  Folder,
-  List,
-  Settings,
-} from "lucide-react";
+import { Banknote, CalendarCheck2, ChevronLeft, Folder, List, Settings } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import logoImg from "@/../public/logo-odonto.png";
