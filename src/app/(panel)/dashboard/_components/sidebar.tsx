@@ -25,11 +25,7 @@ import Link from "next/link";
 import Image from "next/image";
 import logoImg from "@/../public/logo-odonto.png";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function SidebarDashboard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -48,20 +44,13 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
         )}
       >
         <div className="mb-6 mt-4 flex flex-col items-center justify-center">
-          {!isCollapsed && (
-            <Image
-              src={logoImg}
-              alt="Logo do OdontoPRO"
-              quality={100}
-              priority
-            />
-          )}
+          {!isCollapsed && <Image src={logoImg} alt="Logo do OdontoPRO" quality={100} priority />}
 
           <Button
-            className={clsx(
-              "bg-gray-100 hover:bg-gray-50 text-zinc-900 self-end mb-2",
-              { "rotate-180 w-full": isCollapsed, "w-fit": !isCollapsed },
-            )}
+            className={clsx("bg-gray-100 hover:bg-gray-50 text-zinc-900 self-end mb-2", {
+              "rotate-180 w-full": isCollapsed,
+              "w-fit": !isCollapsed,
+            })}
             onClick={() => setIsCollapsed(!isCollapsed)}
           >
             <ChevronLeft className="w-5 h-5" />
@@ -135,9 +124,7 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
           <Collapsible open={!isCollapsed}>
             <CollapsibleContent>
               <nav className="flex flex-col gap-1 overflow-hidden">
-                <span className="text-sm text-gray-400 font-medium mt-1 uppercase">
-                  Painel
-                </span>
+                <span className="text-sm text-gray-400 font-medium mt-1 uppercase">Painel</span>
                 <SidebarLink
                   href="/dashboard"
                   label="Agendamentos"
@@ -198,9 +185,7 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
                 </Button>
               </SheetTrigger>
 
-              <h1 className="text-base md:text-lg font-semibold">
-                Menu OdontoPRO
-              </h1>
+              <h1 className="text-base md:text-lg font-semibold">Menu OdontoPRO</h1>
             </div>
 
             <SheetContent side="right" className="sm:max-w-xs text-black">
@@ -260,23 +245,14 @@ interface SidebarLinkProps {
   pathname: string;
 }
 
-function SidebarLink({
-  href,
-  label,
-  icon,
-  isCollapsed,
-  pathname,
-}: SidebarLinkProps) {
+function SidebarLink({ href, label, icon, isCollapsed, pathname }: SidebarLinkProps) {
   return (
     <Link href={href}>
       <div
-        className={clsx(
-          "flex items-center gap-2 px-3 py-2 rounded-md transition-colors",
-          {
-            "bg-blue-500 text-white": pathname === href,
-            "text-gray-700 hover:bg-gray-100": pathname !== href,
-          },
-        )}
+        className={clsx("flex items-center gap-2 px-3 py-2 rounded-md transition-colors", {
+          "bg-blue-500 text-white": pathname === href,
+          "text-gray-700 hover:bg-gray-100": pathname !== href,
+        })}
       >
         <span className="w-6 h-6">{icon}</span>
         {!isCollapsed && <span>{label}</span>}

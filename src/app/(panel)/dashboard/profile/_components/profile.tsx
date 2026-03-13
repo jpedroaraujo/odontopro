@@ -1,36 +1,13 @@
 "use client";
 
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
+import { InputGroup } from "@/components/ui/input-group";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -40,6 +17,15 @@ import { Button } from "@/components/ui/button";
 import { Controller } from "react-hook-form";
 import Image from "next/image";
 import imgTest from "@/../public/foto1.png";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ChevronRight } from "lucide-react";
 
 export default function ProfileContent() {
   const { form, onSubmit } = useProfileForm();
@@ -84,9 +70,25 @@ export default function ProfileContent() {
                       placeholder="Digite seu nome completo"
                       autoComplete="off"
                     />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+              <Controller
+                name="phone"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="form-phone" className="font-bold">
+                      Telefone:
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id="form-phone"
+                      placeholder="Digite seu telefone"
+                      aria-invalid={fieldState.invalid}
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
@@ -104,9 +106,7 @@ export default function ProfileContent() {
                       placeholder="Digite seu endereço completo"
                       aria-invalid={fieldState.invalid}
                     />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
@@ -115,33 +115,63 @@ export default function ProfileContent() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel
-                      htmlFor="form-rhf-demo-description"
-                      className="font-bold"
-                    >
-                      Status:
-                    </FieldLabel>
+                    <FieldLabel className="font-bold">Status:</FieldLabel>
                     <InputGroup>
                       <Select
                         onValueChange={(value) => field.onChange(value)}
-                        defaultValue="active"
+                        defaultValue={field.value ? "active" : "inactive"}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecione seu status" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="active">Ativo</SelectItem>
-                          <SelectItem value="inactive">Inativo</SelectItem>
-                          <SelectItem value="pending">Pendente</SelectItem>
+                          <SelectItem value="active">Ativo (clínica aberta)</SelectItem>
+                          <SelectItem value="inactive">Inativo (clínica fechada)</SelectItem>
                         </SelectContent>
                       </Select>
                     </InputGroup>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
+              <Dialog>
+                <Controller
+                  name="status"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel className="font-bold">Configurar horários:</FieldLabel>
+
+                      <DialogTrigger asChild>
+                        <Button
+                          className="w-full justify-between font-regular cursor-pointer"
+                          variant="outline"
+                        >
+                          Clique aqui para selecionar horários <ChevronRight className="w-5 h-5" />
+                        </Button>
+                      </DialogTrigger>
+                    </Field>
+                  )}
+                />
+
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Horários da clínica</DialogTitle>
+                    <DialogDescription>
+                      Selecione os horários que sua clínica está aberta atendendo.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <section className="py-4">
+                    <p className="text-sm text-muted-foreground">
+                      Clique nos horários abaixo para marcar ou desmarcar
+                    </p>
+
+                    <div>...</div>
+                  </section>
+                </DialogContent>
+              </Dialog>
+
               <Controller
                 name="timezone"
                 control={form.control}
@@ -163,9 +193,7 @@ export default function ProfileContent() {
                         </SelectContent>
                       </Select>
                     </InputGroup>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />

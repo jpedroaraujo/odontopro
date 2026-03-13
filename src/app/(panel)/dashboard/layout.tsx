@@ -7,11 +7,7 @@ export const metadata: Metadata = {
     "Painel de controle para gerenciamento de pacientes, agendamentos e finanças da clínica odontológica.",
 };
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <SidebarDashboard>{children}</SidebarDashboard>
