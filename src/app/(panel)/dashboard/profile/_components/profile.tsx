@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
+
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputGroup } from "@/components/ui/input-group";
 import {
@@ -19,16 +21,34 @@ import Image from "next/image";
 import imgTest from "@/../public/foto1.png";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ChevronRight } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function ProfileContent() {
   const { form, onSubmit } = useProfileForm();
+  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+  const [tempTimes, setTempTimes] = useState<string[]>([]);
+
+  function generateTimeSlots(): string[] {
+    const slots = [];
+    for (let i = 8; i <= 24; i++) {
+      for (let j = 0; j < 2; j++) {
+        const hour = i.toString().padStart(2, "0");
+        const minute = (j * 30).toString().padStart(2, "0");
+
+        slots.push(`${hour}:${minute}`);
+      }
+    }
+    return slots;
+  }
 
   return (
     <>
@@ -134,11 +154,19 @@ export default function ProfileContent() {
                   </Field>
                 )}
               />
-              <Dialog>
-                <Controller
-                  name="status"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
+              <Controller
+                name="times"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Dialog
+                    open={isScheduleDialogOpen}
+                    onOpenChange={(open) => {
+                      setIsScheduleDialogOpen(open);
+                      if (open) {
+                        setTempTimes(field?.value ?? []);
+                      }
+                    }}
+                  >
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel className="font-bold">Configurar horários:</FieldLabel>
 
@@ -150,27 +178,74 @@ export default function ProfileContent() {
                           Clique aqui para selecionar horários <ChevronRight className="w-5 h-5" />
                         </Button>
                       </DialogTrigger>
+
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Horários da clínica</DialogTitle>
+                          <DialogDescription>
+                            Selecione os horários que sua clínica está aberta atendendo.
+                          </DialogDescription>
+                        </DialogHeader>
+
+                        <section className="py-4">
+                          <p className="text-sm text-muted-foreground mb-2">
+                            Clique nos horários abaixo para marcar ou desmarcar
+                          </p>
+
+                          <div className="grid grid-cols-5 gap-3">
+                            {generateTimeSlots().map((slot) => (
+                              <FieldLabel
+                                key={slot}
+                                className="w-fit h-[35px] text-center cursor-pointer hover:bg-gray-100 border-0! transition-all duration-300"
+                              >
+                                <Field
+                                  orientation="horizontal"
+                                  className={`h-[35px] items-center text-center flex-row rounded-md ${
+                                    tempTimes.includes(slot)
+                                      ? "border-2 border-teal-500"
+                                      : "border border-slate-300"
+                                  }`}
+                                >
+                                  <Checkbox
+                                    id={slot}
+                                    name={slot}
+                                    className="w-0 h-0 opacity-0 absolute"
+                                    checked={tempTimes.includes(slot)}
+                                    onCheckedChange={(checked: boolean) => {
+                                      setTempTimes((prev) =>
+                                        checked
+                                          ? [...prev, slot]
+                                          : prev.filter((value) => value !== slot),
+                                      );
+                                    }}
+                                  />
+                                  <FieldTitle className="flex items-center justify-center">
+                                    {slot}
+                                  </FieldTitle>
+                                </Field>
+                              </FieldLabel>
+                            ))}
+                          </div>
+                        </section>
+
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button
+                              type="button"
+                              className="bg-teal-500 hover:bg-teal-600 w-full"
+                              onClick={() => {
+                                field.onChange(tempTimes);
+                              }}
+                            >
+                              Salvar horários
+                            </Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
                     </Field>
-                  )}
-                />
-
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Horários da clínica</DialogTitle>
-                    <DialogDescription>
-                      Selecione os horários que sua clínica está aberta atendendo.
-                    </DialogDescription>
-                  </DialogHeader>
-
-                  <section className="py-4">
-                    <p className="text-sm text-muted-foreground">
-                      Clique nos horários abaixo para marcar ou desmarcar
-                    </p>
-
-                    <div>...</div>
-                  </section>
-                </DialogContent>
-              </Dialog>
+                  </Dialog>
+                )}
+              />
 
               <Controller
                 name="timezone"

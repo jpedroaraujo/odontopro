@@ -11,6 +11,7 @@ const profileSchema = z.object({
   phone: z.string().optional(),
   status: z.string(),
   timezone: z.string(),
+  times: z.array(z.string()).optional(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -24,6 +25,7 @@ export function useProfileForm() {
       address: "",
       timezone: "",
       status: "Ativo",
+      times: [],
     },
   });
 
