@@ -35,21 +35,6 @@ import clsx from "clsx";
 
 export default function ProfileContent() {
   const { form, onSubmit } = useProfileForm();
-  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
-  const [tempTimes, setTempTimes] = useState<string[]>([]);
-
-  function generateTimeSlots(): string[] {
-    const slots = [];
-    for (let i = 8; i <= 24; i++) {
-      for (let j = 0; j < 2; j++) {
-        const hour = i.toString().padStart(2, "0");
-        const minute = (j * 30).toString().padStart(2, "0");
-
-        slots.push(`${hour}:${minute}`);
-      }
-    }
-    return slots;
-  }
 
   return (
     <>
@@ -159,92 +144,7 @@ export default function ProfileContent() {
                 name="times"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Dialog
-                    open={isScheduleDialogOpen}
-                    onOpenChange={(open) => {
-                      setIsScheduleDialogOpen(open);
-                      if (open) {
-                        setTempTimes(field?.value ?? []);
-                      }
-                    }}
-                  >
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel className="font-bold">Configurar horários:</FieldLabel>
-
-                      <DialogTrigger asChild>
-                        <Button
-                          className="w-full justify-between font-normal cursor-pointer"
-                          variant="outline"
-                        >
-                          Clique aqui para selecionar horários <ChevronRight className="w-5 h-5" />
-                        </Button>
-                      </DialogTrigger>
-
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Horários da clínica</DialogTitle>
-                          <DialogDescription>
-                            Selecione os horários que sua clínica está aberta atendendo.
-                          </DialogDescription>
-                        </DialogHeader>
-
-                        <section className="py-4">
-                          <p className="text-sm text-muted-foreground mb-2">
-                            Clique nos horários abaixo para marcar ou desmarcar
-                          </p>
-
-                          <div className="grid grid-cols-5 gap-3">
-                            {generateTimeSlots().map((slot) => (
-                              <FieldLabel
-                                key={slot}
-                                className="w-fit h-[35px] text-center cursor-pointer hover:bg-gray-100 border-0! transition-all duration-300"
-                              >
-                                <Field
-                                  orientation="horizontal"
-                                  className={clsx(
-                                    "h-[35px] items-center text-center flex-row rounded-md",
-                                    {
-                                      "border-2 border-teal-500": tempTimes.includes(slot),
-                                      "border border-slate-300": !tempTimes.includes(slot),
-                                    },
-                                  )}
-                                >
-                                  <Checkbox
-                                    id={slot}
-                                    name={slot}
-                                    className="w-0 h-0 opacity-0 absolute"
-                                    checked={tempTimes.includes(slot)}
-                                    onCheckedChange={(checked: boolean) => {
-                                      setTempTimes((prev) =>
-                                        checked
-                                          ? [...prev, slot]
-                                          : prev.filter((value) => value !== slot),
-                                      );
-                                    }}
-                                  />
-                                  <FieldTitle className="flex items-center justify-center">
-                                    {slot}
-                                  </FieldTitle>
-                                </Field>
-                              </FieldLabel>
-                            ))}
-                          </div>
-                        </section>
-
-                        <DialogFooter>
-                          <DialogClose asChild>
-                            <Button
-                              type="button"
-                              className="bg-teal-500 hover:bg-teal-600 w-full cursor-pointer"
-                              onClick={() => field.onChange(tempTimes)}
-                            >
-                              Salvar horários
-                            </Button>
-                          </DialogClose>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Field>
-                  </Dialog>
+                  <ScheduleDialog field={field} fieldState={fieldState} />
                 )}
               />
 
@@ -291,5 +191,102 @@ export default function ProfileContent() {
         Sair da conta
       </Button>
     </>
+  );
+}
+
+function ScheduleDialog({ field, fieldState }) {
+  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+  const [tempTimes, setTempTimes] = useState<string[]>([]);
+
+  function generateTimeSlots(): string[] {
+    const slots = [];
+    for (let i = 8; i <= 24; i++) {
+      for (let j = 0; j < 2; j++) {
+        const hour = i.toString().padStart(2, "0");
+        const minute = (j * 30).toString().padStart(2, "0");
+
+        slots.push(`${hour}:${minute}`);
+      }
+    }
+    return slots;
+  }
+
+  return (
+    <Dialog
+      open={isScheduleDialogOpen}
+      onOpenChange={(open) => {
+        setIsScheduleDialogOpen(open);
+        if (open) {
+          setTempTimes(field?.value ?? []);
+        }
+      }}
+    >
+      <Field data-invalid={fieldState.invalid}>
+        <FieldLabel className="font-bold">Configurar horários:</FieldLabel>
+
+        <DialogTrigger asChild>
+          <Button className="w-full justify-between font-normal cursor-pointer" variant="outline">
+            Clique aqui para selecionar horários <ChevronRight className="w-5 h-5" />
+          </Button>
+        </DialogTrigger>
+
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Horários da clínica</DialogTitle>
+            <DialogDescription>
+              Selecione os horários que sua clínica está aberta atendendo.
+            </DialogDescription>
+          </DialogHeader>
+
+          <section className="py-4">
+            <p className="text-sm text-muted-foreground mb-2">
+              Clique nos horários abaixo para marcar ou desmarcar
+            </p>
+
+            <div className="grid grid-cols-5 gap-3">
+              {generateTimeSlots().map((slot) => (
+                <FieldLabel
+                  key={slot}
+                  className="w-fit h-[35px] text-center cursor-pointer hover:bg-gray-100 border-0! transition-all duration-300"
+                >
+                  <Field
+                    orientation="horizontal"
+                    className={clsx("h-[35px] items-center text-center flex-row rounded-md", {
+                      "border-2 border-teal-500": tempTimes.includes(slot),
+                      "border border-slate-300": !tempTimes.includes(slot),
+                    })}
+                  >
+                    <Checkbox
+                      id={slot}
+                      name={slot}
+                      className="w-0 h-0 opacity-0 absolute"
+                      checked={tempTimes.includes(slot)}
+                      onCheckedChange={(checked: boolean) => {
+                        setTempTimes((prev) =>
+                          checked ? [...prev, slot] : prev.filter((value) => value !== slot),
+                        );
+                      }}
+                    />
+                    <FieldTitle className="flex items-center justify-center">{slot}</FieldTitle>
+                  </Field>
+                </FieldLabel>
+              ))}
+            </div>
+          </section>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button
+                type="button"
+                className="bg-teal-500 hover:bg-teal-600 w-full cursor-pointer"
+                onClick={() => field.onChange(tempTimes)}
+              >
+                Salvar horários
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Field>
+    </Dialog>
   );
 }
