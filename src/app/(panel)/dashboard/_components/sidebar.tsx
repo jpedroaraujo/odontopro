@@ -12,12 +12,28 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Banknote, CalendarCheck2, ChevronLeft, Folder, List, Settings } from "lucide-react";
+import {
+  Banknote,
+  CalendarCheck2,
+  ChevronLeft,
+  Folder,
+  List,
+  Moon,
+  Settings,
+  Sun,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import logoImg from "@/../public/logo-odonto.png";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "next-themes";
 
 export function SidebarDashboard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -155,6 +171,10 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
             </CollapsibleContent>
           </Collapsible>
         </div>
+
+        <div className="mt-auto ml-auto">
+          <ModeToggle />
+        </div>
       </aside>
 
       <div
@@ -163,7 +183,7 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
           "md:ml-64": !isCollapsed,
         })}
       >
-        <header className="md:hidden flex items-center justify-between px-2 md:px-6 h-14 z-10 border-b sticky top-0 bg-white">
+        <header className="md:hidden flex items-center justify-between px-2 md:px-6 h-14 z-10 border-b sticky top-0 light:bg-white dark:bg-black">
           <Sheet>
             <div className="flex items-center gap-4">
               <SheetTrigger asChild>
@@ -182,7 +202,9 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
 
             <SheetContent side="right" className="sm:max-w-xs text-black">
               <SheetHeader>
-                <SheetTitle>OdontoPRO</SheetTitle>
+                <SheetTitle>
+                  <span className="light:text-black dark:text-white">Odonto</span>PRO
+                </SheetTitle>
                 <SheetDescription>Menu administrativo</SheetDescription>
               </SheetHeader>
 
@@ -243,12 +265,34 @@ function SidebarLink({ href, label, icon, isCollapsed, pathname }: SidebarLinkPr
       <div
         className={clsx("flex items-center gap-2 px-3 py-2 rounded-md transition-colors", {
           "bg-blue-500 text-white": pathname === href,
-          "text-gray-700 hover:bg-gray-100": pathname !== href,
+          "light:text-gray-700 light:hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700":
+            pathname !== href,
         })}
       >
         <span className="w-6 h-6">{icon}</span>
         {!isCollapsed && <span>{label}</span>}
       </div>
     </Link>
+  );
+}
+
+function ModeToggle() {
+  const { setTheme } = useTheme();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon">
+          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

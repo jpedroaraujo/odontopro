@@ -14,7 +14,7 @@ const profileSchema = z.object({
   times: z.array(z.string()).optional(),
 });
 
-type ProfileFormData = z.infer<typeof profileSchema>;
+export type ProfileFormData = z.infer<typeof profileSchema>;
 
 export function useProfileForm() {
   const form = useForm<ProfileFormData>({

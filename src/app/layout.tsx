@@ -4,6 +4,7 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SessionAuthProvider } from "@/components/session-auth";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,14 +27,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <TooltipProvider>
-          <SessionAuthProvider>
-            {children}
-            <Toaster />
-          </SessionAuthProvider>
-        </TooltipProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TooltipProvider>
+            <SessionAuthProvider>
+              {children}
+              <Toaster />
+            </SessionAuthProvider>
+          </TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

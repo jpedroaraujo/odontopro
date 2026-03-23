@@ -14,9 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { useProfileForm } from "../hooks/useProfileForm";
+import { ProfileFormData, useProfileForm } from "../hooks/useProfileForm";
 import { Button } from "@/components/ui/button";
-import { Controller } from "react-hook-form";
+import { Controller, ControllerFieldState, ControllerRenderProps } from "react-hook-form";
 import Image from "next/image";
 import imgTest from "@/../public/foto1.png";
 import {
@@ -35,6 +35,19 @@ import clsx from "clsx";
 
 export default function ProfileContent() {
   const { form, onSubmit } = useProfileForm();
+
+  const timezones = Intl.supportedValuesOf("timeZone").filter(
+    (zone) =>
+      (zone.startsWith("America/Sao_Paulo") ||
+        zone.startsWith("America/Fortaleza") ||
+        zone.startsWith("America/Recife") ||
+        zone.startsWith("America/Boa_Vista") ||
+        zone.startsWith("America/Manaus") ||
+        zone.startsWith("America/Cuiaba") ||
+        zone.startsWith("America/Belem") ||
+        zone.startsWith("America/Bahia")) &&
+      !zone.toLowerCase().includes("bahia_banderas"),
+  );
 
   return (
     <>
@@ -153,19 +166,18 @@ export default function ProfileContent() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel className="font-bold">Fuso horário:</FieldLabel>
+                    <FieldLabel className="font-bold">Selecione o fuso horário:</FieldLabel>
                     <InputGroup>
-                      <Select
-                        onValueChange={(value) => field.onChange(value)}
-                        defaultValue="active"
-                      >
+                      <Select onValueChange={(value) => field.onChange(value)}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecione seu fuso horário" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="active">Ativo</SelectItem>
-                          <SelectItem value="inactive">Inativo</SelectItem>
-                          <SelectItem value="pending">Pendente</SelectItem>
+                          {timezones.map((zone) => (
+                            <SelectItem key={zone} value={zone}>
+                              {zone.replace("_", " ")}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </InputGroup>
@@ -194,7 +206,12 @@ export default function ProfileContent() {
   );
 }
 
-function ScheduleDialog({ field, fieldState }) {
+type ScheduleDialogProps = {
+  field: ControllerRenderProps<ProfileFormData, "times">;
+  fieldState: ControllerFieldState;
+};
+
+function ScheduleDialog({ field, fieldState }: ScheduleDialogProps) {
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
   const [tempTimes, setTempTimes] = useState<string[]>([]);
 
